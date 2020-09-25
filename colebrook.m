@@ -13,10 +13,16 @@ function f = colebrook(Re,epsilon)
 %   Example 2: Multiple Re, single epsilon
 %      Re = 5000:1000:100000;
 %      epsilon = 1e-4;
-%      f = colebrook(Re,epsilon*ones(size(Re)));
+%      f = colebrook(Re,epsilon);
 %      plot(Re,f)
 %
-%   Example 3: Multiple Re, multiple epsilon
+%   Example 3: Single Re, multiple epsilon
+%      Re = 1e5;
+%      epsilon = linspace(1e-4,1e-1,100);
+%      f = colebrook(Re,epsilon);
+%      plot(epsilon,f)
+%
+%   Example 4: Multiple Re, multiple epsilon
 %      Re = logspace(4,8,100);
 %      epsilon = linspace(1e-4,1e-1,100);
 %      [RE,EPSILON] = meshgrid(Re,epsilon);
@@ -28,16 +34,24 @@ function f = colebrook(Re,epsilon)
 %          friction in roughened pipes. Proceedings of the Royal Society of
 %          London. Series A - Mathematical and Physical Sciences, 161(906),
 %          367-381.
-%      [2] Colebrook, C. (1939). TURBULENT FLOW IN PIPES, WITH PARTICULAR
-%          REFERENCE TO THE TRANSITION REGION BETWEEN THE SMOOTH AND ROUGH
-%          PIPE LAWS. Journal of the Institution of Civil Engineers, 11(4),
+%      [2] Colebrook, C. (1939). Turbulent Flow in Pipes, with Particular
+%          Reference to the Transition Region between the Smooth and Rough
+%          Pipe Laws. Journal of the Institution of Civil Engineers, 11(4),
 %          133-156.
 %
 %   Author:
 %      Ildeberto de los Santos Ruiz
 %      idelossantos@ittg.edu.mx
 
-shape = size(Re);
+if isscalar(epsilon) && not(isscalar(Re))
+    shape = size(Re);
+    epsilon = epsilon*ones(shape);
+elseif isscalar(Re) && not(isscalar(epsilon))
+    shape = size(epsilon);
+    Re = Re*ones(shape);
+else
+    shape = size(Re);
+end
 Re = Re(:);
 epsilon = epsilon(:);
 f = zeros(size(Re));
